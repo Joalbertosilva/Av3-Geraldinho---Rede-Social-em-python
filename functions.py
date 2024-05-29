@@ -67,11 +67,17 @@ class RedeSocial:
             print(f"Um ou ambos os usuários não encontrados na rede!")
 
     def visualizar_rede(self):
-        print("Rede Social:")
+        print("\n--- Rede Social ---")
         for usuario in self.usuarios.values():
-            print(f"{usuario.nome}:")
-            for amigo, sentimento in usuario.amigos.items():
-                print(f"  Amigo: {amigo.nome}, Sentimento: {sentimento}")
+            print(f"\nUsuário: {usuario.nome}")
+            print(f"  Amigos ({len(usuario.amigos)}):")
+            if usuario.amigos:
+                for amigo, sentimento in usuario.amigos.items():
+                    print(f"    - {amigo.nome} (Sentimento: {sentimento})")
+            else:
+                print("    Nenhum amigo adicionado.")
+            print(f"  Interesses: {', '.join(usuario.interesses) if usuario.interesses else 'Nenhum interesse adicionado.'}")
+        print("\n-------------------\n")
 
     def enviar_mensagem(self, usuario1, usuario2, mensagem):
         if usuario1 in self.usuarios and usuario2 in self.usuarios:
@@ -82,22 +88,28 @@ class RedeSocial:
     def buscar_usuario(self, nome):
         if nome in self.usuarios:
             usuario = self.usuarios[nome]
-            print(f"Usuário {nome} encontrado!")
+            print(f"\nUsuário: {nome}")
             print(f"Amigos: {', '.join([amigo.nome for amigo in usuario.amigos])}")
             print(f"Interesses: {', '.join(usuario.interesses)}")
             print("Mensagens:")
-            for i, (remetente, mensagem) in enumerate(usuario.mensagens, 1):
-                print(f"{i}. De {remetente}: {mensagem}")
             if usuario.mensagens:
+                for i, (remetente, mensagem) in enumerate(usuario.mensagens, 1):
+                    print(f"  {i}. De {remetente}: {mensagem}")
                 escolha = input("Deseja responder alguma mensagem? (s/n): ")
                 if escolha.lower() == 's':
-                    indice = int(input("Digite o número da mensagem que deseja responder: ")) - 1
-                    if 0 <= indice < len(usuario.mensagens):
-                        remetente = usuario.mensagens[indice][0]
-                        resposta = input("Digite sua resposta: ")
-                        self.usuarios[nome].enviar_mensagem(self.usuarios[remetente], resposta)
-                    else:
-                        print("Número de mensagem inválido.")
+                    try:
+                        indice = int(input("Digite o número da mensagem que deseja responder: ")) - 1
+                        if 0 <= indice < len(usuario.mensagens):
+                            remetente = usuario.mensagens[indice][0]
+                            resposta = input("Digite sua resposta: ")
+                            self.usuarios[nome].enviar_mensagem(self.usuarios[remetente], resposta)
+                        else:
+                            print("Número de mensagem inválido.")
+                    except ValueError:
+                        print("Entrada inválida! Por favor, digite um número válido.")
+            else:
+                print("  Nenhuma mensagem recebida.")
+            print("\n-------------------\n")
         else:
             print(f"Usuário {nome} não encontrado na rede!")
 
@@ -106,22 +118,25 @@ class RedeSocial:
         amizades = []
         for usuario in self.usuarios.values():
             for amigo in usuario.amigos:
-                if usuario.nome < amigo.nome:  # Avoid duplicating the pair
+                if usuario.nome < amigo.nome: 
                     amizades.append((usuario.nome, amigo.nome))
         
         print("Amizades existentes:")
         for i, (usuario1, usuario2) in enumerate(amizades):
             print(f"{i + 1}. {usuario1} e {usuario2}")
         
-        escolha = int(input("Escolha o número da amizade para alterar o sentimento: ")) - 1
-        if 0 <= escolha < len(amizades):
-            usuario1, usuario2 = amizades[escolha]
-            sentimento = input(f"Digite o sentimento da interação entre {usuario1} e {usuario2}: ")
-            self.usuarios[usuario1].amigos[self.usuarios[usuario2]] = sentimento
-            self.usuarios[usuario2].amigos[self.usuarios[usuario1]] = sentimento
-            print(f"Sentimento entre {usuario1} e {usuario2} atualizado com sucesso!")
-        else:
-            print("Escolha inválida!")
+        try:
+            escolha = int(input("Escolha o número da amizade para alterar o sentimento: ")) - 1
+            if 0 <= escolha < len(amizades):
+                usuario1, usuario2 = amizades[escolha]
+                sentimento = input(f"Digite o sentimento da interação entre {usuario1} e {usuario2}: ")
+                self.usuarios[usuario1].amigos[self.usuarios[usuario2]] = sentimento
+                self.usuarios[usuario2].amigos[self.usuarios[usuario1]] = sentimento
+                print(f"Sentimento entre {usuario1} e {usuario2} atualizado com sucesso!")
+            else:
+                print("Escolha inválida!")
+        except ValueError:
+            print("Entrada inválida! Por favor, digite um número válido.")
         
         self.visualizar_rede()
 
@@ -144,7 +159,3 @@ class RedeSocial:
 
         for interesse, usuarios in interesses_map.items():
             print(f"Interesse '{interesse}': {', '.join([u.nome for u in usuarios])}")
-
-
-    
-
