@@ -3,12 +3,12 @@ class Usuario:
         self.nome = nome
         self.amigos = {}
         self.interesses = set()
-        self.mensagens = [] 
+        self.mensagens = []
 
     def adicionar_amigo(self, amigo):
         if amigo not in self.amigos:
-            self.amigos[amigo] = "nenhum"
-            amigo.amigos[self] = "nenhum"
+            self.amigos[amigo] = "Nenhum amigo"
+            amigo.amigos[self] = "Nenhum amigo"
 
     def remover_amigo(self, amigo):
         if amigo in self.amigos:
@@ -118,13 +118,13 @@ class RedeSocial:
         amizades = []
         for usuario in self.usuarios.values():
             for amigo in usuario.amigos:
-                if usuario.nome < amigo.nome: 
+                if usuario.nome < amigo.nome:
                     amizades.append((usuario.nome, amigo.nome))
-        
+
         print("Amizades existentes:")
         for i, (usuario1, usuario2) in enumerate(amizades):
             print(f"{i + 1}. {usuario1} e {usuario2}")
-        
+
         try:
             escolha = int(input("Escolha o número da amizade para alterar o sentimento: ")) - 1
             if 0 <= escolha < len(amizades):
@@ -137,7 +137,7 @@ class RedeSocial:
                 print("Escolha inválida!")
         except ValueError:
             print("Entrada inválida! Por favor, digite um número válido.")
-        
+
         self.visualizar_rede()
 
     def centralidade(self):

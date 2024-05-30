@@ -3,6 +3,7 @@ from functions import *
 rede = RedeSocial()
 
 while True:
+    print("\n------------------- Rede Social -------------------")
     print("\nO que deseja fazer?")
     print("1. Adicionar usuário")
     print("2. Remover usuário")
